@@ -5,7 +5,9 @@
 char SYMBOL_LIVE = '*';
 char SYMBOL_FREE = ' ';
 
-char **world;
+int WINDOW_SIZE_ROW, WINDOW_SIZE_COL;
+
+char **WORLD;
 
 unsigned int
 randr(int min, int max)
@@ -14,80 +16,80 @@ randr(int min, int max)
 }
 
 void
-init_world(int world_size_x, int world_size_y)
+init_world()
 {
   int i, j;
 
-  world = (char **) calloc(world_size_x, sizeof(char *));
-  for (i = 0; i < world_size_x; i++) {
-    world[i] = calloc(world_size_y, sizeof(char));
+  WORLD = (char **) calloc(WINDOW_SIZE_COL, sizeof(char *));
+
+  for (i = 0; i < WINDOW_SIZE_COL; i++) {
+    WORLD[i] = calloc(WINDOW_SIZE_ROW, sizeof(char));
   }
 
-  for (i = 0; i < world_size_x; i++) {
-    for (j = 0; j < world_size_y; j++) {
-      world[i][j] = SYMBOL_FREE;
+  for (i = 0; i < WINDOW_SIZE_COL; i++) {
+    for (j = 0; j < WINDOW_SIZE_ROW; j++) {
+      WORLD[i][j] = SYMBOL_FREE;
     }
   }
 
-  world[1][3] = SYMBOL_LIVE;
-  world[2][1] = SYMBOL_LIVE;
-  world[2][3] = SYMBOL_LIVE;
-  world[3][2] = SYMBOL_LIVE;
-  world[3][3] = SYMBOL_LIVE;
+  WORLD[1][3] = SYMBOL_LIVE;
+  WORLD[2][1] = SYMBOL_LIVE;
+  WORLD[2][3] = SYMBOL_LIVE;
+  WORLD[3][2] = SYMBOL_LIVE;
+  WORLD[3][3] = SYMBOL_LIVE;
 
-  for (i = 0; i < world_size_x; i++) {
-    for (j = 0; j < world_size_y; j++) {
-      mvprintw(j, i, "%c", world[i][j]);
+  for (i = 0; i < WINDOW_SIZE_COL; i++) {
+    for (j = 0; j < WINDOW_SIZE_ROW; j++) {
+      mvprintw(j, i, "%c", WORLD[i][j]);
     }
   }
 }
 
 void
-change_world(int world_size_x, int world_size_y)
+change_world()
 {
   int i, j;
 
-  i = randr(0, world_size_x - 1);
-  j = randr(0, world_size_y - 1);
+  i = randr(0, WINDOW_SIZE_COL - 1);
+  j = randr(0, WINDOW_SIZE_ROW - 1);
 
-  world[i][j] = SYMBOL_LIVE;
+  WORLD[i][j] = SYMBOL_LIVE;
 
-  for (i = 0; i < world_size_x; i++) {
-    for (j = 0; j < world_size_y; j++) {
-      mvprintw(j, i, "%c", world[i][j]);
+  for (i = 0; i < WINDOW_SIZE_COL; i++) {
+    for (j = 0; j < WINDOW_SIZE_ROW; j++) {
+      mvprintw(j, i, "%c", WORLD[i][j]);
     }
   }
 }
 
 void
-destroy_world(int world_size_x)
+destroy_world()
 {
   int i;
-  for (i = 0; i < world_size_x; i++) {
-    free(world[i]);
+
+  for (i = 0; i < WINDOW_SIZE_COL; i++) {
+    free(WORLD[i]);
   }
-  free(world);
+
+  free(WORLD);
 }
 
 int
 main(void)
 {
-  int WINDOW_SIZE_ROW, WINDOW_SIZE_COL;
-  int i, j;
-
   srand(time(NULL));
 
   initscr();
   getmaxyx(stdscr, WINDOW_SIZE_ROW, WINDOW_SIZE_COL);
 
-  init_world(WINDOW_SIZE_COL, WINDOW_SIZE_ROW);
+  init_world();
 
   while (1) {
-    change_world(WINDOW_SIZE_COL, WINDOW_SIZE_ROW);
+    change_world();
     refresh();
   }
 
-  destroy_world(WINDOW_SIZE_COL);
+  destroy_world();
 
   getch();
   endwin();
